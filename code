@@ -1,0 +1,43 @@
+// sanitized_notepad_demo.ino
+// Benign demo: opens Windows Run dialog, launches Notepad, types a friendly message.
+// Safe for educational use. Do NOT run on production machines without permission.
+
+#include <Keyboard.h>
+
+void setup() {
+  // Give the host OS time to fully recognize the device after plugging in.
+  delay(3000);
+
+  // Start keyboard HID
+  Keyboard.begin();
+
+  // Open the Windows Run dialog: WIN + R
+  // NOTE: KEY_LEFT_GUI is the Windows key on most boards. On macOS it will be the Command key.
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press('r');
+  delay(150);                 // short hold
+  Keyboard.releaseAll();
+  delay(400);                 // wait for Run dialog to appear
+
+  // Type 'notepad' and press Enter to open Notepad
+  Keyboard.print("notepad");
+  delay(100);
+  Keyboard.press(KEY_RETURN);
+  Keyboard.release(KEY_RETURN);
+  delay(600);                 // give Notepad time to open (increase if system is slow)
+
+  // Type a friendly, clearly non-malicious message
+  Keyboard.print("Hello from sanitized_notepad_demo!");
+  Keyboard.print(" This is a harmless HID demo for learning purposes.");
+  Keyboard.print(" Please close Notepad when finished.");
+  Keyboard.print("\r\n\r\nTimestamp (host): ");
+  // We can't read host time from Arduino HID; put a placeholder
+  Keyboard.print("[host timestamp not captured by device]");
+
+  // End keyboard HID usage (one-shot behavior)
+  Keyboard.end();
+}
+
+void loop() {
+  // Nothing here — demo runs once in setup() and then stops.
+}
